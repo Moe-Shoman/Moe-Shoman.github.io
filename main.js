@@ -8,7 +8,8 @@ let currentBlockName;
 let currentPosition = []
 let dropCount = 0;
 let horizontalstart = 3;
-
+let start;
+const startButton = document.getElementById("startButton");
 function createGrid() {
     //draw lines down
     ctx.beginPath();
@@ -147,7 +148,7 @@ function clearBlock() {
 
 function drop() {
     if (checkDown()) {
-        clearBlock()
+        clearBlock();
         dropCount++;
         addBlock(currentBlockName, dropCount);
     } else {
@@ -202,4 +203,25 @@ document.addEventListener("keydown", event => {
         drop();
         drawBlock();
     }
+})
+// function timer(timestamp) {
+//     start = timestamp;
+//     let progress = timestamp - start;
+//   drop();
+//   drawBlock();
+//   if (progress < 1000) {
+//     requestAnimationFrame(timer);
+//   }
+// }
+startButton.addEventListener("click", event => {
+  event.target.style.visibility = "hidden";
+  addBlock();
+  drawBlock();
+  // requestAnimationFrame(function (timestamp) {
+  //     timer(timestamp);
+  // });
+  setInterval(function () {
+    drop();
+    drawBlock();
+  }, 700)
 })
