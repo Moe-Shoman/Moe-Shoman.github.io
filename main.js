@@ -34,8 +34,8 @@ function blockObjMaker(blockName, ...ind) {
     }
     positions = [positions.slice(0, 4), positions.slice(4, 8), positions.slice(8, 12), positions.slice(12, 16)];
     blocks[blockName] = {
-    positions: positions,
-  }
+        positions: positions,
+    }
 }
 blockObjMaker("I", 0, 4, 8, 12);
 blockObjMaker("L", 0, 4, 8, 9);
@@ -46,20 +46,21 @@ blockObjMaker("S", 1, 2, 4, 5);
 blockObjMaker("T", 1, 4, 5, 6);
 
 function checkAround(blockName, dir, ...pos) {
-  let underPositions = [];
-  blocks[blockName].check = {};
-  for (var i = 0; i < pos.length; i++) {
-    underPositions.push(pos[i]);
-    blocks[blockName].check[dir] = underPositions;
-  }
+    let underPositions = [];
+    blocks[blockName].check = {};
+    for (var i = 0; i < pos.length; i++) {
+        underPositions.push(pos[i]);
+        blocks[blockName].check[dir] = underPositions;
+    }
 }
-// checkAround("I", "down",  currentPosition[4]);
-checkAround("L", "down", [3,0], [3,1]);
-checkAround("J", "down", [3,1], [3,2]);
-checkAround("O", "down", [2,0], [2,1]);
-checkAround("Z", "down", [1,0], [2,1], [2,2]);
-checkAround("S", "down", [2, 0], [2,1], [1,2]);
-checkAround("T", "down", [2, 0], [2,1], [2,2]);
+checkAround("I", "down", [4, 0]);
+checkAround("L", "down", [3, 0], [3, 1]);
+checkAround("J", "down", [3, 1], [3, 2]);
+checkAround("O", "down", [2, 0], [2, 1]);
+checkAround("Z", "down", [1, 0], [2, 1], [2, 2]);
+checkAround("S", "down", [2, 0], [2, 1], [1, 2]);
+checkAround("T", "down", [2, 0], [2, 1], [2, 2]);
+
 function gridPositions() {
     for (var i = 0; i < 20; i++) {
         grid.push(new Array(10).fill(0));
@@ -72,33 +73,59 @@ function pickBlock() {
     return blockNames[Math.floor(blockNames.length * Math.random())];
 }
 let currentBlock;
-let currentBlockName = null;
+let currentBlockName;
 let currentPosition = []
-function addBlock(vertiocalDrop) {
-    currentBlockName = pickBlock();
+
+function addBlock(block, verticalDrop) {
+    verticalDrop = verticalDrop || 0;
+    currentBlockName = currentBlockName || pickBlock();
     currentBlock = blocks[currentBlockName]['positions'];
     for (var i = 0; i < currentBlock.length; i++) {
         for (var j = 0; j < 4; j++) {
             if (currentBlock[i][j] === 1) {
-              currentPosition.push([i, j +3]);
-                grid[i + vertiocalDrop][j + 3] += 1;
+                currentPosition.push([i + verticalDrop, j + 3]);
+                grid[i + verticalDrop][j + 3] += 1;
             }
         }
     }
 }
-// function checkDownCollision() {
-//   for (var i = 3; i > 0; i--) {
-//
-//   }
-// }
-function drop() {
-  console.log(blocks[currentBlockName].check.down);
+
+function checkDown() {
+    let unders = blocks[currentBlockName].check.down;
+    for (var i = 0; i < unders.length; i++) {
+        if (((unders[i][0] + dropCount === 20) || grid[unders[i][0] + dropCount][(unders[i][1]) + 3])) {
+            return false;
+        }
+        return true;
+    }
 }
+let dropCount = 0;
+
+function drop() {
+    if (checkDown()) {
+        for (var i = 0; i < currentPosition.length; i++) {
+            let row = currentPosition[i][0];
+            let cell = currentPosition[i][1];
+            grid[row][cell] = 0;
+        }
+        dropCount++
+        addBlock(currentBlockName, dropCount);
+    } else {
+        currentPosition = [];
+        dropCount = 0;
+        currentBlockName = pickBlock()
+        addBlock();
+    }
+}
+
 function drawBlock() {
     grid.forEach(function(row, y) {
         row.forEach(function(val, x) {
             if (val) {
                 ctx.fillStyle = "red";
+                ctx.fillRect(x * 30, y * 30, 30, 30);
+            } else {
+                ctx.fillStyle = "black";
                 ctx.fillRect(x * 30, y * 30, 30, 30);
             }
         })
