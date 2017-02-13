@@ -10,6 +10,7 @@ let dropCount = 0;
 let horizontalstart = 3;
 let start;
 const startButton = document.getElementById("startButton");
+let filledLines = [];
 function createGrid() {
     //draw lines down
     ctx.beginPath();
@@ -204,6 +205,25 @@ document.addEventListener("keydown", event => {
         drawBlock();
     }
 })
+function checkLineClear() {
+  grid.forEach(function (line) {
+    if(line.every(c => c === 1)){
+      filledLines.push(line);
+    }
+  })
+}
+function emptyLine() {
+  checkLineClear();
+  filledLines.forEach(function (line) {
+    line.fill(0);
+  })
+  filledLines = []
+}
+function clearLines() {
+  if(!checkDown()){
+    emptyLine();
+  }
+}
 // function timer(timestamp) {
 //     start = timestamp;
 //     let progress = timestamp - start;
@@ -221,6 +241,7 @@ startButton.addEventListener("click", event => {
   //     timer(timestamp);
   // });
   setInterval(function () {
+    clearLines();
     drop();
     drawBlock();
   }, 700)
