@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 const grid = [];
+let game;
 let blocks = {};
 let currentBlock;
 let currentBlockName;
@@ -10,8 +11,13 @@ let dropCount = 0;
 let horizontalstart = 3;
 let start;
 let score = 0;
-let scoreBoard = document.getElementById('score');
+const scoreBoard = document.getElementById('score');
 const startButton = document.getElementById("startButton");
+const gameOverImg = document.createElement("img");
+gameOverImg.src = "images/gameOver.png";
+gameOverImg.style.margin = "0px 500px";
+gameOverImg.style.width = "300px"
+
 function createGrid() {
     //draw lines down
     ctx.beginPath();
@@ -207,36 +213,49 @@ document.addEventListener("keydown", event => {
         drawBlock();
     }
 })
+
 function checkLineClear() {
-  grid.forEach(function (line, index) {
-    if(line.every(c => c === 1)){
-      let cleared = line.fill(0);
-      score += 100;
-      grid.splice(index, 1);
-      grid.unshift(cleared);
-    }
-  })
+    grid.forEach(function(line, index) {
+        if (line.every(c => c === 1)) {
+            let cleared = line.fill(0);
+            score += 100;
+            grid.splice(index, 1);
+            grid.unshift(cleared);
+        }
+    })
 }
+
 function emptyLine() {
-  checkLineClear();
-  drawBlock();
+    checkLineClear();
+    drawBlock();
 }
+
 function clearLines() {
-  if(!checkDown()){
-    emptyLine();
-  }
+    if (!checkDown()) {
+        emptyLine();
+    }
 }
+
 function updateScore() {
-  scoreBoard.innerHTML = `SCORE ${score}`;
+    scoreBoard.innerHTML = `SCORE ${score}`;
+}
+
+function gameOver() {
+    if (dropCount === 0 && !checkDown()) {
+        canvas.style.visibility = 'hidden';
+        document.body.insertBefore(gameOverImg, document.body.firstChild);
+        clearInterval(game);
+    }
 }
 startButton.addEventListener("click", event => {
-  event.target.style.visibility = "hidden";
-  addBlock();
-  drawBlock();
-  setInterval(function () {
-    drop();
-    clearLines();
-    updateScore();
+    event.target.style.visibility = "hidden";
+    addBlock();
     drawBlock();
-  }, 700)
+    game = setInterval(function() {
+        drop();
+        clearLines();
+        updateScore();
+        drawBlock();
+        gameOver();
+    }, 700)
 })
