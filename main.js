@@ -9,8 +9,9 @@ let currentPosition = []
 let dropCount = 0;
 let horizontalstart = 3;
 let start;
+let score = 0;
+let scoreBoard = document.getElementById('score');
 const startButton = document.getElementById("startButton");
-let filledLines = [];
 function createGrid() {
     //draw lines down
     ctx.beginPath();
@@ -103,7 +104,7 @@ function addBlock(block, verticalDrop, horizontalOffset) {
         for (var j = 0; j < 4; j++) {
             if (currentBlock[i][j] === 1) {
                 currentPosition.push([i + verticalDrop, j + horizontalOffset]);
-                grid[i + verticalDrop][j + horizontalOffset] += 1;
+                grid[i + verticalDrop][j + horizontalOffset] = 1;
             }
         }
     }
@@ -152,6 +153,7 @@ function drop() {
         clearBlock();
         dropCount++;
         addBlock(currentBlockName, dropCount);
+        score += 1;
     } else {
         currentPosition = [];
         dropCount = 0;
@@ -206,43 +208,35 @@ document.addEventListener("keydown", event => {
     }
 })
 function checkLineClear() {
-  grid.forEach(function (line) {
+  grid.forEach(function (line, index) {
     if(line.every(c => c === 1)){
-      filledLines.push(line);
+      let cleared = line.fill(0);
+      score += 100;
+      grid.splice(index, 1);
+      grid.unshift(cleared);
     }
   })
 }
 function emptyLine() {
   checkLineClear();
-  filledLines.forEach(function (line) {
-    line.fill(0);
-  })
-  filledLines = []
+  drawBlock();
 }
 function clearLines() {
   if(!checkDown()){
     emptyLine();
   }
 }
-// function timer(timestamp) {
-//     start = timestamp;
-//     let progress = timestamp - start;
-//   drop();
-//   drawBlock();
-//   if (progress < 1000) {
-//     requestAnimationFrame(timer);
-//   }
-// }
+function updateScore() {
+  scoreBoard.innerHTML = `SCORE ${score}`;
+}
 startButton.addEventListener("click", event => {
   event.target.style.visibility = "hidden";
   addBlock();
   drawBlock();
-  // requestAnimationFrame(function (timestamp) {
-  //     timer(timestamp);
-  // });
   setInterval(function () {
-    clearLines();
     drop();
+    clearLines();
+    updateScore();
     drawBlock();
   }, 700)
 })

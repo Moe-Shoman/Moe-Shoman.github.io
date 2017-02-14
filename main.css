@@ -1,12 +1,24 @@
 body  {
-  background-image: url(images/night.png);
+  background-image: url(images/night.jpg);
+}
+#wrapper   {
+  margin: 0 auto;
+  position: relative;
 }
 #canvas  {
     margin: 0 auto;
-    display: block;
+    display: inline-block;
+    margin-left: 480px;
+    /*position: absolute;*/
 }
 input   {
   width: 100px;
   margin: 0 auto;
   display: block;
-};
+}
+#score   {
+  color: yellow;
+  font-size: 36px;
+  float: right;
+  margin-right: 220px
+}
