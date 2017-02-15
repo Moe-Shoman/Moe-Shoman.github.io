@@ -12,12 +12,15 @@ let horizontalstart = 3;
 let start;
 let score = 0;
 const scoreBoard = document.getElementById('score');
+const highScoreBoard = document.getElementById('highScore');
 const startButton = document.getElementById("startButton");
 const gameOverImg = document.createElement("img");
 gameOverImg.src = "images/gameOver.png";
 gameOverImg.style.margin = "0px 500px";
-gameOverImg.style.width = "300px"
-
+gameOverImg.style.width = "300px";
+let highScore = localStorage.getItem("HighScore") || 0;
+scoreBoard.innerText = `SCORE ${score}`
+highScoreBoard.innerText = `HIGHSCORE ${highScore}`;
 function createGrid() {
     //draw lines down
     ctx.beginPath();
@@ -193,6 +196,9 @@ function drawBlock() {
             if (val) {
                 ctx.fillStyle = "red";
                 ctx.fillRect(x * 30, y * 30, 30, 30);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = "rgb(128, 128, 128)"
+                ctx.stroke();
             } else {
                 ctx.fillStyle = "black";
                 ctx.fillRect(x * 30, y * 30, 30, 30);
@@ -238,13 +244,19 @@ function clearLines() {
 
 function updateScore() {
     scoreBoard.innerHTML = `SCORE ${score}`;
+    highScoreBoard.innerHTML = `HIGHSCORE ${highScore}`;
 }
-
+function updateHighScore() {
+  if(score > highScore){
+    localStorage.setItem("HighScore", score);
+  }
+}
 function gameOver() {
     if (dropCount === 0 && !checkDown()) {
         canvas.style.visibility = 'hidden';
         document.body.insertBefore(gameOverImg, document.body.firstChild);
         clearInterval(game);
+        updateHighScore();
     }
 }
 startButton.addEventListener("click", event => {

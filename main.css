@@ -1,24 +1,39 @@
-body  {
-  background-image: url(images/night.jpg);
+body {
+    background-image: url(images/night.jpg);
 }
-#wrapper   {
-  margin: 0 auto;
-  position: relative;
+
+#wrapper {
+    margin: 0 auto;
+    position: relative;
 }
-#canvas  {
+
+#canvas {
     margin: 0 auto;
     display: inline-block;
     margin-left: 480px;
     /*position: absolute;*/
 }
-input   {
-  width: 100px;
-  margin: 0 auto;
-  display: block;
+
+input {
+    width: 100px;
+    margin: 0 auto;
+    display: block;
 }
-#score   {
-  color: yellow;
-  font-size: 36px;
+
+#score {
+    color: yellow;
+    font-size: 36px;
+    float: right;
+    margin-right: 220px
+}
+
+#highScore {
+    color: rgb(255,205,0);
+    font-size: 36px;
+    float: right;
+    margin-right: 130px;
+}
+#scores   {
   float: right;
-  margin-right: 220px
+  margin-right: 0px;
 }
